@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-  companies: [], // array di nomi aziende preferite
+  companies: [],
 }
 
 const favouritesSlice = createSlice({

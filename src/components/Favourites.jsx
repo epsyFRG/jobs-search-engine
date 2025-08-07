@@ -1,10 +1,21 @@
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
-import { Container, Row, Col, ListGroup, Button, Card } from "react-bootstrap"
+import {
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  Button,
+  Card,
+  Spinner,
+  Alert,
+} from "react-bootstrap"
 import { removeFavourite } from "../favouritesSlice"
 
 const Favourites = () => {
   const companies = useSelector((state) => state.favourites.companies)
+
+  const { loading, error } = useSelector((state) => state.search)
   const dispatch = useDispatch()
 
   const handleRemove = (company) => {
@@ -19,6 +30,11 @@ const Favourites = () => {
             <h1 className="display-4 mb-3">Favourite Companies</h1>
             <p className="text-muted">Your saved companies</p>
           </div>
+
+          {loading && (
+            <Spinner animation="border" className="d-block mx-auto mb-3" />
+          )}
+          {error && <Alert variant="danger">{error}</Alert>}
 
           {companies.length === 0 ? (
             <Card className="text-center py-5">

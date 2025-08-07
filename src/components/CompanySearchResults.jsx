@@ -1,33 +1,21 @@
-import { useEffect, useState } from "react"
-import { Container, Row, Col, Card } from "react-bootstrap"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Container, Row, Col, Card, Spinner, Alert } from "react-bootstrap"
 import Job from "./Job"
 import { useParams } from "react-router-dom"
+import { fetchJobs } from "../actions"
 
 const CompanySearchResults = () => {
-  const [jobs, setJobs] = useState([])
+  const dispatch = useDispatch()
+  const { jobs, loading, error } = useSelector((state) => state.search)
   const params = useParams()
 
-  const baseEndpoint =
-    "https://strive-benchmark.herokuapp.com/api/jobs?company="
-
   useEffect(() => {
-    getJobs()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const getJobs = async () => {
-    try {
-      const response = await fetch(baseEndpoint + params.company)
-      if (response.ok) {
-        const { data } = await response.json()
-        setJobs(data)
-      } else {
-        alert("Error fetching results")
-      }
-    } catch (error) {
-      console.log(error)
+    if (params.company) {
+      dispatch(fetchJobs(params.company))
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.company])
 
   return (
     <Container>
@@ -39,6 +27,10 @@ const CompanySearchResults = () => {
           </div>
 
           <div className="mt-4">
+            {loading && (
+              <Spinner animation="border" className="d-block mx-auto" />
+            )}
+            {error && <Alert variant="danger">{error}</Alert>}
             {jobs.map((jobData) => (
               <Job key={jobData._id} data={jobData} />
             ))}
